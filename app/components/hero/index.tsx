@@ -1,101 +1,63 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
-import { LayoutGrid } from "../ui/layout-grid";
+import React from 'react';
+import { WobbleCard } from "../ui/wobble-card";
 
-export function LayoutGridDemo() {
+const WobbleCardDemo: React.FC<{ weatherData: any, countryData: any, forexData: any }> = ({ weatherData, countryData, forexData }) => {
+  // Safely access the base currency and USD rate or provide fallbacks
+  const baseCurrency = forexData?.base_code ?? 'USD'; // Use base_code instead of base
+  const usdRate = forexData?.conversion_rates?.USD ?? 'N/A'; // Use conversion_rates instead of rates
+
   return (
-    <div className="h-screen py-20 w-full">
-      <LayoutGrid cards={cards} />
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 max-w-7xl mx-auto w-full pt-16 mt-16 pb-10">
+      
+      {/* Card 1: Country Data */}
+      <WobbleCard
+        containerClassName="col-span-1 lg:col-span-2 h-full bg-pink-800 min-h-[375px] lg:min-h-[225px]"
+        className=""
+      >
+        <div className="max-w-xs">
+          <h2 className="text-left text-balance text-base md:text-lg lg:text-2xl font-semibold tracking-[-0.015em] text-white">
+            {countryData ? countryData.name.common : 'Country Data'}
+          </h2>
+          <p className="mt-4 text-left text-sm text-neutral-200">
+            Capital: {countryData ? countryData.capital[0] : 'N/A'}
+          </p>
+          <p className="mt-4 text-left text-sm text-neutral-200">
+            Population: {countryData ? countryData.population : 'N/A'}
+          </p>
+          <p className="mt-4 text-left text-sm text-neutral-200">
+            Region: {countryData ? countryData.region : 'N/A'}
+          </p>
+        </div>
+      </WobbleCard>
+      
+      {/* Card 2: Weather Data */}
+      <WobbleCard containerClassName="col-span-1 min-h-[225px]">
+        <h2 className="max-w-80 text-left text-balance text-base md:text-lg lg:text-2xl font-semibold tracking-[-0.015em] text-white">
+          {weatherData ? `Weather in ${weatherData.name}` : 'Weather Data'}
+        </h2>
+        <p className="mt-4 max-w-[20rem] text-left text-sm text-neutral-200">
+          Temperature: {weatherData ? `${(weatherData.main.temp - 273.15).toFixed(2)}°C` : 'N/A'}
+        </p>
+        <p className="mt-4 max-w-[20rem] text-left text-sm text-neutral-200">
+          Condition: {weatherData ? weatherData.weather[0].description : 'N/A'}
+        </p>
+      </WobbleCard>
+      
+      {/* Card 3: Forex Data */}
+      <WobbleCard containerClassName="col-span-1 lg:col-span-3 bg-blue-900 min-h-[375px] lg:min-h-[450px] xl:min-h-[225px]">
+        <div className="max-w-xs">
+          <h2 className="text-left text-balance text-base md:text-lg lg:text-2xl font-semibold tracking-[-0.015em] text-white">
+            Exchange Rate: 1 {baseCurrency} to USD
+          </h2>
+          <p className="mt-4 max-w-[20rem] text-left text-sm text-neutral-200">
+            Rate: {usdRate}
+          </p>
+        </div>
+      </WobbleCard>
+
     </div>
   );
 }
 
-const SkeletonOne = () => {
-  return (
-    <div>
-      <p className="font-bold md:text-4xl text-xl text-white">
-        House in the woods
-      </p>
-      <p className="font-normal text-base text-white"></p>
-      <p className="font-normal text-base my-4 max-w-lg text-neutral-200">
-        A serene and tranquil retreat, this house in the woods offers a peaceful
-        escape from the hustle and bustle of city life.
-      </p>
-    </div>
-  );
-};
-
-const SkeletonTwo = () => {
-  return (
-    <div>
-      <p className="font-bold md:text-4xl text-xl text-white">
-        House above the clouds
-      </p>
-      <p className="font-normal text-base text-white"></p>
-      <p className="font-normal text-base my-4 max-w-lg text-neutral-200">
-        Perched high above the world, this house offers breathtaking views and a
-        unique living experience. It&apos;s a place where the sky meets home,
-        and tranquility is a way of life.
-      </p>
-    </div>
-  );
-};
-const SkeletonThree = () => {
-  return (
-    <div>
-      <p className="font-bold md:text-4xl text-xl text-white">
-        Greens all over
-      </p>
-      <p className="font-normal text-base text-white"></p>
-      <p className="font-normal text-base my-4 max-w-lg text-neutral-200">
-        A house surrounded by greenery and nature&apos;s beauty. It&apos;s the
-        perfect place to relax, unwind, and enjoy life.
-      </p>
-    </div>
-  );
-};
-const SkeletonFour = () => {
-  return (
-    <div>
-      <p className="font-bold md:text-4xl text-xl text-white">
-        Rivers are serene
-      </p>
-      <p className="font-normal text-base text-white"></p>
-      <p className="font-normal text-base my-4 max-w-lg text-neutral-200">
-        A house by the river is a place of peace and tranquility. It&apos;s the
-        perfect place to relax, unwind, and enjoy life.
-      </p>
-    </div>
-  );
-};
-
-const cards = [
-  {
-    id: 1,
-    content: <SkeletonOne />,
-    className: "md:col-span-2",
-    thumbnail:
-      "https://images.unsplash.com/photo-1476231682828-37e571bc172f?q=80&w=3474&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    id: 2,
-    content: <SkeletonTwo />,
-    className: "col-span-1",
-    thumbnail:
-      "https://images.unsplash.com/photo-1464457312035-3d7d0e0c058e?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    id: 3,
-    content: <SkeletonThree />,
-    className: "col-span-1",
-    thumbnail:
-      "https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    id: 4,
-    content: <SkeletonFour />,
-    className: "md:col-span-2",
-    thumbnail:
-      "https://images.unsplash.com/photo-1475070929565-c985b496cb9f?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-];
+export default WobbleCardDemo;
